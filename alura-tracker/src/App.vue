@@ -1,47 +1,49 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
+import BarraLateral from './components/BarraLateral.vue'
+import FormularioTarefa from './components/FormularioTarefa.vue'
+import Tarefa from './components/Tarefa.vue'
+import type ITarefa from './interfaces/ITarefa'
+import Box from './components/Box.vue'
+
+export default defineComponent({
+  name: 'App',
+  components: { BarraLateral, FormularioTarefa, Tarefa, Box },
+  data() {
+    return {
+      tarefas: [] as ITarefa[],
+    }
+  },
+  computed: {
+    fezAlgumaTarefa(): boolean {
+      return this.tarefas.length > 0
+    },
+  },
+  methods: {
+    salvarTarefa(pTarefa: ITarefa): void {
+      this.tarefas.push(pTarefa)
+    },
+  },
+})
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <main class="columns is-gapless is-multiline">
+    <div class="column is-one-quarter">
+      <BarraLateral />
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
+    <div class="column is-three-quarter">
+      <FormularioTarefa @evento-finalizar-tarefa="salvarTarefa" />
+      <div class="lista">
+        <Tarefa v-for="(lTarefa, i) in tarefas" :key="i" :tarefa="lTarefa" />
+        <Box v-if="!fezAlgumaTarefa"> Você não está muito produtivo hoje :( </Box>
+      </div>
+    </div>
   </main>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+<style lang="css">
+.lista {
+  padding: 1.25rem;
 }
 </style>
